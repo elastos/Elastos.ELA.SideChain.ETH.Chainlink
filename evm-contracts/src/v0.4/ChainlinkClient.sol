@@ -25,6 +25,8 @@ contract ChainlinkClient {
   bytes32 constant private ENS_ORACLE_SUBNAME = keccak256("oracle");
   address constant private LINK_TOKEN_POINTER = 0x8EC1950DA4ea6c42C123811B58B925e3717854D5;
   address constant private ARBITER_ADDR_POINTER = 0xf016297a749D89e00880E5Db61210cE6777a530c;
+  uint256 public current_token_balance = 0;
+  uint256 public current_payment = 0;
 
   ENSInterface private ens;
   bytes32 private ensNode;
@@ -95,6 +97,8 @@ contract ChainlinkClient {
     _req.nonce = requests;
     pendingRequests[requestId] = _oracle;
     emit ChainlinkRequested(requestId);
+    current_token_balance = link.balanceOf(this);
+    current_payment = _payment;
     require(link.transferAndCall(_oracle, _payment, encodeRequest(_req)), "unable to transferAndCall to oracle");
     requests += 1;
 
